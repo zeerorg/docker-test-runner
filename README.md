@@ -17,7 +17,7 @@ Start by:
 * `init` : Takes 3 arguments.
 * `init-file` : Initializes from `dock-runner-init.json` file.
 * `test` : Run the test
-* `clean` : Delete the previous containers.
+* `clean` : Delete the previous test containers.
 * `logs` : Accepts one of 3 arguments and gives logs.
 
 

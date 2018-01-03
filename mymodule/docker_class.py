@@ -86,6 +86,14 @@ class _DockerClass:
     def install_container(self, val):
         self.dictionary["install"]["container"] = val
 
+    @property
+    def update_container(self):
+        return self.dictionary.get("update").get("container")
+
+    @update_container.setter
+    def update_container(self, val):
+        self.dictionary["update"]["container"] = val
+
     def close(self):
         with open(self.init_file, 'w') as f:
             json.dump(self.dictionary, f, indent=4, sort_keys=True)

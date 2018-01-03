@@ -43,15 +43,27 @@ def init(install, update, test):
     init_file()
 
 
-# @cli.command("init-file")
+@cli.command("init-file")
 def init_file():
     host = global_host
     with docker_class.open_init_file() as data:
         click.echo("Pulling ubuntu:xenial Image ...")
         dock_lib.pull_image(host)
         click.echo("Creating test machine image. Installing packages, setting up environment. May take time ...")
-        image, install_logs = dock_lib.create_image(host, data.install_command)
-        data.image = image.tags[0]
-        data.install_logs = install_logs
+        image_tag, install_logs = dock_lib.create_image(host, data.install_command)
+        data.image = image_tag
+        data.install_container = install_logs
 
-    click.echo("Image created : {}".format(image.tags[0]))
+    click.echo("Image created : {}".format(image_tag))
+
+
+@cli.command("test")
+def test():
+    host = global_host
+    with docker_class.open_init_file() as data:
+        click.echo("Creating container from image {}".format(data.image))
+        image_tag, container_name = dock_lib.create_update_container(host, data.image, data.update_command)
+        # use image tag to create test container, container_name to write to json file
+        data.update_container = container_name
+        pass
+    pass
