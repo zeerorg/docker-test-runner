@@ -31,7 +31,7 @@ class _DockerClass:
         if os.path.isfile(init_file):
             with open(init_file, 'r') as f:
                 s = f.read()
-            if not s:
+            if s:
                 self.dictionary = json.loads(s)
 
         self.init_file = init_file
@@ -44,7 +44,7 @@ class _DockerClass:
     @install_command.setter
     def install_command(self, val):
         self.dictionary["install"] = {
-            "commmand": val,
+            "command": val,
             "logs": ""
         }
 
@@ -88,7 +88,7 @@ class _DockerClass:
 
     def close(self):
         with open(self.init_file, 'w') as f:
-            json.dump(self.dictionary, f)
+            json.dump(self.dictionary, f, indent=4, sort_keys=True)
 
     def clear(self):
         self.dictionary = {}

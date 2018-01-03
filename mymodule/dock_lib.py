@@ -1,7 +1,7 @@
 import docker
 from docker.errors import DockerException
 
-from helper import *
+from mymodule import helper
 
 
 def _get_client(host):
@@ -34,9 +34,9 @@ def create_image(host, install_commands):
     client = _get_client(host)
     container = client.containers.create("ubuntu:xenial", "bash -c \"{}\"".format(install_commands))
     container.start()
-    logs = list(container.logs(stdout=True, stderr=True, stream=True).decode('utf-8'))
+    logs = [x.decode("utf-8") for x in container.logs(stdout=True, stderr=True, stream=True)]
     logs = '\n'.join(logs)
-    image = container.commit('test-runner-{}'.format(get_rand_str()))
+    image = container.commit('test-runner-{}'.format(helper.get_rand_str()))
     container.remove()
     return image, logs
 

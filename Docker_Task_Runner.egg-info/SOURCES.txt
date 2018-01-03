@@ -1,0 +1,6 @@
+Docker_Task_Runner.egg-info/PKG-INFO
+Docker_Task_Runner.egg-info/SOURCES.txt
+Docker_Task_Runner.egg-info/dependency_links.txt
+Docker_Task_Runner.egg-info/entry_points.txt
+Docker_Task_Runner.egg-info/requires.txt
+Docker_Task_Runner.egg-info/top_level.txt
