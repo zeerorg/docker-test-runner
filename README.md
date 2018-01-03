@@ -13,11 +13,12 @@ Start by:
 `dock-runner`
 
 ## Goals:
---host (Optional): Specify a docker url. Will be taken from environment variable `DOCKER_HOST` if not specified.
+--host (Optional): Specify a docker url. Will be taken from environment variable `DOCKER_HOST` if not specified. //
 * `init` : Takes 3 arguments.
 * `init-file` : Initializes from `dock-runner-init.json` file.
 * `test` : Run the test
 * `clean` : Delete the previous containers.
+* `logs` : Accepts one of 3 arguments and gives logs.
 
 
 ### `init` : 
@@ -29,7 +30,7 @@ Creates the `dock-runner-init.json` file.
 #### `dock-runner-init.json` file:
 
 * image : Specifies the image name
-* install/update/test : Specifies the install/update/test command respectively. Also contains the logs for inspection.
+* install/update/test : Specifies the install/update/test command respectively. Also contains the logs for inspection. The logs are retrieved from closed containers and not directly stored in json.  
 * containers (list) : Contains list of containers run. TODO: also store logs.
 * host : The host url (If specified)
 
@@ -38,6 +39,26 @@ Creates the `dock-runner-init.json` file.
 * Determine if the test has completed.
 * trigger post completion command
 * 
+
+### Sample `dock-runner-init.json` file
+```json
+{
+    "image" : "test-runner-abgfd",
+    "install": {
+        "command": "apt-get update; apt-get install git -y;",
+        "container": "hungry_hyena"
+    },
+    "update": {
+        "command": "apt-get update; apt-get install python3 -y;",
+        "container": "heltic_picker"
+    },
+    "test": {
+        "command": "python --version",
+        "container": "command_preach"
+    },
+    "containers": ["<list of closed containers used for testing>"]
+}
+```
 
 ### Example usage : (TODO)
 

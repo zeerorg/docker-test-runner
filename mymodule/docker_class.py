@@ -45,7 +45,7 @@ class _DockerClass:
     def install_command(self, val):
         self.dictionary["install"] = {
             "command": val,
-            "logs": ""
+            "container": ""
         }
 
     @property
@@ -56,7 +56,7 @@ class _DockerClass:
     def update_command(self, val):
         self.dictionary["update"] = {
             "command": val,
-            "logs": ""
+            "container": ""
         }
 
     @property
@@ -67,7 +67,7 @@ class _DockerClass:
     def test_command(self, val):
         self.dictionary["test"] = {
             "command": val,
-            "logs": ""
+            "container": ""
         }
 
     @property
@@ -79,12 +79,12 @@ class _DockerClass:
         self.dictionary["image"] = val
 
     @property
-    def install_logs(self):
-        return self.dictionary.get("install").get("logs")
+    def install_container(self):
+        return self.dictionary.get("install").get("container")
 
-    @install_logs.setter
-    def install_logs(self, val):
-        self.dictionary["install"]["logs"] = val
+    @install_container.setter
+    def install_container(self, val):
+        self.dictionary["install"]["container"] = val
 
     def close(self):
         with open(self.init_file, 'w') as f:
