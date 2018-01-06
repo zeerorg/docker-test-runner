@@ -58,12 +58,29 @@ def init_file():
 
 
 @cli.command("test")
-def test():
+def test() -> None:
+    """
+    Steps to run test container
+    1. Delete update container, update image and test container
+    2. Create update container from install image
+    3. Create update image from update container
+    4. Use update image to create test container
+
+    """
     host = global_host
     with docker_class.open_init_file() as data:
+        if data.update_container:
+            dock_lib.del_container(host, data.update_container)
+        if data.test_container:
+            dock_lib.del_container(host, data.test_container)
+        if data.update_image:
+            dock_lib.del_image(host, data.update_container)
+
         click.echo("Creating container from image {}".format(data.image))
-        image_tag, container_name = dock_lib.create_update_container(host, data.image, data.update_command)
+        data.update_image, data.update_container = dock_lib.create_update_container(host, data.image, data.update_command)
         # use image tag to create test container, container_name to write to json file
-        data.update_container = container_name
+        click.echo("Running test")
+        data.test_container = dock_lib.run_test_container(host, data.update_image, data.test_command)
+        click.echo("Test ran successfully")
         pass
     pass

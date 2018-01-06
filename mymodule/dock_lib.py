@@ -44,6 +44,14 @@ def is_image_avail(host, image):
 
 
 def create_update_container(host, image_name, update_command):
+    """
+    Create an update container and image
+
+    :param host:
+    :param image_name:
+    :param update_command:
+    :return:
+    """
     client = _get_client(host)
     image = client.images.get(image_name)
     container = client.containers.create(image, command=update_command)
@@ -54,7 +62,30 @@ def create_update_container(host, image_name, update_command):
 
 
 def run_test_container(host, update_image, test_commands):
+    """
+    Run the test
+
+    :param host:
+    :param update_image:
+    :param test_commands:
+    :return:
+    """
+    client = _get_client(host)
+    container = client.containers.create(update_image, command=test_commands)
+    container.start()
+    container.wait()
+    return container.name
     pass
+
+
+def del_container(host, container):
+    client = _get_client(host)
+    client.containers.get(container).remove(v=True)
+
+
+def del_image(host, image):
+    client = _get_client(host)
+    client.images.get(image).remove()
 
 
 def pull_image(host):

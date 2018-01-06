@@ -50,13 +50,13 @@ Creates the `dock-runner-init.json` file.
     },
     "update": {
         "command": "apt-get update; apt-get install python3 -y;",
-        "container": "heltic_picker"
+        "container": "heltic_picker",
+        "image": ""
     },
     "test": {
         "command": "python --version",
         "container": "command_preach"
-    },
-    "containers": ["<list of closed containers used for testing>"]
+    }
 }
 ```
 

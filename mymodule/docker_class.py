@@ -5,7 +5,7 @@ from contextlib import contextmanager
 
 
 @contextmanager
-def open_init_file(init_file=None):
+def open_init_file(init_file: str = None):
     """
     Context manager for opening init file and saving when it closes
 
@@ -37,19 +37,18 @@ class _DockerClass:
         self.init_file = init_file
 
     @property
-    def install_command(self):
+    def install_command(self) -> str:
         return self.dictionary.get("install").get("command")
-        pass
 
     @install_command.setter
-    def install_command(self, val):
+    def install_command(self, val: str) -> None:
         self.dictionary["install"] = {
             "command": val,
             "container": ""
         }
 
     @property
-    def update_command(self):
+    def update_command(self) -> str:
         return self.dictionary.get("update").get("command")
 
     @update_command.setter
@@ -93,6 +92,14 @@ class _DockerClass:
     @update_container.setter
     def update_container(self, val):
         self.dictionary["update"]["container"] = val
+
+    @property
+    def update_image(self):
+        return self.dictionary.get("update").get("image")
+
+    @update_image.setter
+    def update_image(self, val):
+        self.dictionary["update"]["image"] = val
 
     def close(self):
         with open(self.init_file, 'w') as f:
