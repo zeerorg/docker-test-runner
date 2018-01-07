@@ -71,7 +71,7 @@ class _DockerClass:
 
     @property
     def image(self):
-        return self.dictionary.get("image").get("command")
+        return self.dictionary.get("image")
 
     @image.setter
     def image(self, val):
@@ -92,6 +92,14 @@ class _DockerClass:
     @update_container.setter
     def update_container(self, val):
         self.dictionary["update"]["container"] = val
+
+    @property
+    def test_container(self):
+        return self.dictionary.get("test").get("container")
+
+    @test_container.setter
+    def test_container(self, val):
+        self.dictionary["test"]["container"] = val
 
     @property
     def update_image(self):

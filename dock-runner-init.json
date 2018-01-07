@@ -1,15 +1,18 @@
 {
-    "image": "test-runner-ovmdn:latest",
+    "image": "test-runner-eumvh:latest",
     "install": {
         "command": "apt-get update; apt-get install git -y;",
-        "container": "relaxed_noyce"
+        "container": "sharp_mclean"
     },
     "test": {
         "command": "git --version",
+        "container": "infallible_northcutt",
         "logs": ""
     },
     "update": {
         "command": "apt-get upgrade -y",
+        "container": "focused_swirles",
+        "image": "ehuie:latest",
         "logs": ""
     }
 }

@@ -4,91 +4,68 @@ from docker.errors import DockerException
 from mymodule import helper
 
 
-def _get_client(host):
-    return docker.DockerClient(base_url=host)
+class CallDocker(object):
+
+    def __init__(self, host: str):
+        self.client = docker.DockerClient(base_url=host)
+
+    @staticmethod
+    def check_docker(host):
+        try:
+            if not docker.DockerClient(base_url=host).ping():
+                raise DockerException
+        except (NameError, DockerException):
+            return False
+        return True
+
+    def create_test_image(self, install_commands: str):
+        """
+        Creates a docker image and commits it. Returns the name of image and the container.
+        """
+        container = self.client.containers.create("ubuntu:xenial", "bash -c \"{}\"".format(install_commands))
+        container.start()
+        container.wait()
+        image = container.commit('test-runner-{}'.format(helper.get_rand_str()))
+        return image.tags[0], container.name
+
+    def create_update_container(self, image_name, update_command):
+        """
+        Create an update container and image
+
+        :param host:
+        :param image_name:
+        :param update_command:
+        :return:
+        """
+        image = self.client.images.get(image_name)
+        container = self.client.containers.create(image, command=update_command)
+        container.start()
+        container.wait()
+        image = container.commit(repository=helper.get_rand_str(5))
+        return image.tags[0], container.name
+
+    def run_test_container(self, update_image, test_commands):
+        """
+        Run the test
+
+        :param host:
+        :param update_image:
+        :param test_commands:
+        :return:
+        """
+        container = self.client.containers.create(update_image, command=test_commands)
+        container.start()
+        container.wait()
+        return container.name
 
 
-def check_docker(host):
-    """
-    Checks if docker is running.
-
-    :param host: (str)
-    :return: (bool)
-    """
-    try:
-        if not _get_client(host).ping():
-            raise DockerException
-    except (NameError, DockerException):
-        return False
-    return True
+    def del_container(self, container):
+        self.client.containers.get(container).remove(v=True)
 
 
-def create_image(host, install_commands):
-    """
-    Creates a docker image and commits it. Returns the name of image and the container.
-
-    :param host: (str)
-    :param install_commands: (str)
-    :return: (str)
-    """
-    client = _get_client(host)
-    container = client.containers.create("ubuntu:xenial", "bash -c \"{}\"".format(install_commands))
-    container.start()
-    container.wait()
-    image = container.commit('test-runner-{}'.format(helper.get_rand_str()))
-    return image.tags[0], container.name
+    def del_image(self, image):
+        self.client.images.get(image).remove()
 
 
-def is_image_avail(host, image):
-    pass
-
-
-def create_update_container(host, image_name, update_command):
-    """
-    Create an update container and image
-
-    :param host:
-    :param image_name:
-    :param update_command:
-    :return:
-    """
-    client = _get_client(host)
-    image = client.images.get(image_name)
-    container = client.containers.create(image, command=update_command)
-    container.start()
-    container.wait()
-    image = container.commit(repository=helper.get_rand_str(5))
-    return image.tags[0], container.name
-
-
-def run_test_container(host, update_image, test_commands):
-    """
-    Run the test
-
-    :param host:
-    :param update_image:
-    :param test_commands:
-    :return:
-    """
-    client = _get_client(host)
-    container = client.containers.create(update_image, command=test_commands)
-    container.start()
-    container.wait()
-    return container.name
-    pass
-
-
-def del_container(host, container):
-    client = _get_client(host)
-    client.containers.get(container).remove(v=True)
-
-
-def del_image(host, image):
-    client = _get_client(host)
-    client.images.get(image).remove()
-
-
-def pull_image(host):
-    client = _get_client(host)
-    client.images.pull("ubuntu:xenial")
-    pass
+    def pull_image(self):
+        self.client.images.pull("ubuntu:xenial")

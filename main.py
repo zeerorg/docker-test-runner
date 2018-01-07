@@ -1,7 +1,7 @@
 import click
 
 from mymodule import docker_class
-from mymodule import dock_lib
+from mymodule.dock_lib import CallDocker
 
 global_host = ""
 
@@ -11,7 +11,7 @@ global_host = ""
 def cli(host):
     global global_host
     global_host = host
-    if not dock_lib.check_docker(host):
+    if not CallDocker.check_docker(host):
         click.echo("No docker installed, or host not correct.\nSee dock-runner --help")
         return
 
@@ -28,12 +28,6 @@ def init(install, update, test):
     """
     Creates the container and initializes `dock-runner-init.json` file.
     """
-    # opts = {
-    #     "install": install,
-    #     "update": update,
-    #     "test": test
-    # }
-    # write_to_file(opts)
     click.echo("Creating dock-runner-init.json file ...")
     with docker_class.open_init_file() as data:
         data.clear()
@@ -43,24 +37,23 @@ def init(install, update, test):
     init_file()
 
 
-@cli.command("init-file")
+@cli.command("init-file", help="Create container from init.json file")
 def init_file():
     host = global_host
+    dock_worker = CallDocker(host)
     with docker_class.open_init_file() as data:
         click.echo("Pulling ubuntu:xenial Image ...")
-        dock_lib.pull_image(host)
+        dock_worker.pull_image()
         click.echo("Creating test machine image. Installing packages, setting up environment. May take time ...")
-        image_tag, install_logs = dock_lib.create_image(host, data.install_command)
-        data.image = image_tag
-        data.install_container = install_logs
-
-    click.echo("Image created : {}".format(image_tag))
+        data.image, data.install_container = dock_worker.create_test_image(data.install_command)
+        click.echo("Image created : {}".format(data.image))
 
 
-@cli.command("test")
+@cli.command("test", help="Runs the test container")
 def test() -> None:
     """
     Steps to run test container
+
     1. Delete update container, update image and test container
     2. Create update container from install image
     3. Create update image from update container
@@ -68,19 +61,17 @@ def test() -> None:
 
     """
     host = global_host
+    dock_worker = CallDocker(host)
     with docker_class.open_init_file() as data:
         if data.update_container:
-            dock_lib.del_container(host, data.update_container)
+            dock_worker.del_container(data.update_container)
         if data.test_container:
-            dock_lib.del_container(host, data.test_container)
+            dock_worker.del_container(data.test_container)
         if data.update_image:
-            dock_lib.del_image(host, data.update_container)
+            dock_worker.del_image(data.update_container)
 
         click.echo("Creating container from image {}".format(data.image))
-        data.update_image, data.update_container = dock_lib.create_update_container(host, data.image, data.update_command)
-        # use image tag to create test container, container_name to write to json file
+        data.update_image, data.update_container = dock_worker.create_update_container(data.image, data.update_command)
         click.echo("Running test")
-        data.test_container = dock_lib.run_test_container(host, data.update_image, data.test_command)
+        data.test_container = dock_worker.run_test_container(data.update_image, data.test_command)
         click.echo("Test ran successfully")
-        pass
-    pass
