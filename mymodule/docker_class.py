@@ -9,8 +9,6 @@ def open_init_file(init_file: str = None):
     """
     Context manager for opening init file and saving when it closes
 
-    :param init_file:
-    :return:
     """
     docker_file = _DockerClass()
     if init_file:

@@ -75,3 +75,19 @@ def test() -> None:
         click.echo("Running test")
         data.test_container = dock_worker.run_test_container(data.update_image, data.test_command)
         click.echo("Test ran successfully")
+
+
+@cli.command("logs", help="Get logs for container. Defaults to test logs, specify STAGE argument for install or update logs.")
+@click.argument("stage", default="test")
+def logs(stage: str):
+    dock_worker = CallDocker(global_host)
+    with docker_class.open_init_file() as data:
+        logs = b""
+        if stage.lower() == "install":
+            logs = dock_worker.get_logs(data.install_container)
+        elif stage.lower() == "update":
+            logs = dock_worker.get_logs(data.update_container)
+        else:
+            logs = dock_worker.get_logs(data.test_container)
+        
+        click.echo(logs.decode("utf-8"))

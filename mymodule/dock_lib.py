@@ -69,3 +69,6 @@ class CallDocker(object):
 
     def pull_image(self):
         self.client.images.pull("ubuntu:xenial")
+
+    def get_logs(self, container):
+        return self.client.containers.get(container).logs(stdout=True, stderr=True)
