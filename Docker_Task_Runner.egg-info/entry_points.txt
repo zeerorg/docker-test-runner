@@ -1,4 +1,0 @@
-
-        [console_scripts]
-        dock-runner=main:cli
-    
