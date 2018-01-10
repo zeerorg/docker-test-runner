@@ -58,14 +58,11 @@ class CallDocker(object):
         container.wait()
         return container.name
 
-
     def del_container(self, container):
         self.client.containers.get(container).remove(v=True)
 
-
     def del_image(self, image):
         self.client.images.get(image).remove()
-
 
     def pull_image(self):
         self.client.images.pull("ubuntu:xenial")

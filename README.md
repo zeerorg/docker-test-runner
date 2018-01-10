@@ -13,12 +13,12 @@ Start by:
 `dock-runner`
 
 ## Goals:
---host (Optional): Specify a docker url. Will be taken from environment variable `DOCKER_HOST` if not specified. //
-* `init` : Takes 3 arguments.
-* `init-file` : Initializes from `dock-runner-init.json` file.
-* `test` : Run the test
-* `clean` : Delete the previous test containers.
-* `logs` : Accepts one of 3 arguments and gives logs.
+--host (Optional): Specify a docker url. Will be taken from environment variable `DOCKER_HOST` if not specified.
+- [x] `init` : Takes 3 arguments.
+- [x] `init-file` : Initializes from `dock-runner-init.json` file.
+- [x] `test` : Run the test
+- [ ] `clean` : Delete the previous test containers.
+- [x] `logs` : Accepts one of 3 arguments and gives logs.
 
 
 ### `init` : 
@@ -60,6 +60,6 @@ Creates the `dock-runner-init.json` file.
 }
 ```
 
-### Example usage : (TODO)
+### An API for direct use in python projects.
 
 

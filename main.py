@@ -77,7 +77,8 @@ def test() -> None:
         click.echo("Test ran successfully")
 
 
-@cli.command("logs", help="Get logs for container. Defaults to test logs, specify STAGE argument for install or update logs.")
+@cli.command("logs", help="Get logs for container. Defaults to test logs, specify STAGE argument for install or "
+                          "update logs.")
 @click.argument("stage", default="test")
 def logs(stage: str):
     dock_worker = CallDocker(global_host)
